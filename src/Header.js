@@ -2,7 +2,7 @@
 
 function Header(props){
     return(
-    <header>
+    <header id={props.id}>
        <h1>Meme Generator!!</h1>
        <img src={props.img} alt=""/>
     </header>)

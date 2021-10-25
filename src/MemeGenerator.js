@@ -11,10 +11,15 @@ function MemeGenerator() {
       // DATA IS SAVED AS "allMemeImgs"
       .then((result) => {
         const allMemeImgs = result.data.memes;
+        
+        // GET RANDOM IMAGE
+        const randomNum = Math.floor(Math.random() * allMemeImgs.length)
 
-        setData(allMemeImgs);
-      });
-  }, []);
+        // SET STATE TO RANDOM IMAGE
+        setData(allMemeImgs[randomNum]);
+    });
+}, []);
+
 
   // INPUT FIELD LOGIC AND SAVING STATE OF INPUTS
   const [topText, setTopText] = useState("");
@@ -28,23 +33,33 @@ function MemeGenerator() {
       setBottomText(e.target.value);
     }
   };
+
+  const handleClick = (e) => {
+      e.preventDefault();
+      console.log('CLICKED')
+  } 
   return (
     <div>
-      {data.map((item) => {
-        return (
-        <Header 
-        key={item.id} 
-        img={item.url} 
-        alt={item.name} 
-        />);
-      })}
-      <input className="top-text" value={topText} onChange={handleChange} />
+      <Header 
+        id={data.id}
+        img={data.url}
+        alt={data.name}
+        />
 
-      <input
-        className="bottom-text"
-        value={bottomText}
-        onChange={handleChange}
-      />
+      <form action="">
+          <input
+            className="top-text"
+            value={topText}
+            onChange={handleChange}
+            />
+          <input
+            className="bottom-text"
+            value={bottomText}
+            onChange={handleChange}
+          />
+          <button
+            onClick={handleClick}>GEN</button>
+      </form>
     </div>
   );
 }
