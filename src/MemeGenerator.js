@@ -1,6 +1,7 @@
 // TextInput.js
 import { useState, useEffect } from "react";
-import Header from "./Header";
+import Meme from "./Meme";
+import Form from "./Form";
 
 function MemeGenerator() {
   const [data, setData] = useState([]);
@@ -35,31 +36,37 @@ function MemeGenerator() {
   };
 
   const handleClick = (e) => {
-      e.preventDefault();
-      console.log('CLICKED')
-  } 
+    fetch("https://api.imgflip.com/get_memes")
+    .then((response) => response.json())
+    // DATA IS SAVED AS "allMemeImgs"
+    .then((result) => {
+      const allMemeImgs = result.data.memes;
+      
+      // GET RANDOM IMAGE
+      const randomNum = Math.floor(Math.random() * allMemeImgs.length)
+
+      // SET STATE TO RANDOM IMAGE
+      setData(allMemeImgs[randomNum]);
+      });
+    } 
+
   return (
-    <div>
-      <Header 
+    <div className='wrapper'>
+      
+      <Form
+        handleClick={handleClick}
+        handleChange={handleChange}
+        topText={topText}
+        bottomText={bottomText}
+        />
+        
+      <Meme 
         id={data.id}
         img={data.url}
         alt={data.name}
+        topText={topText}
+        bottomText={bottomText}
         />
-
-      <form action="">
-          <input
-            className="top-text"
-            value={topText}
-            onChange={handleChange}
-            />
-          <input
-            className="bottom-text"
-            value={bottomText}
-            onChange={handleChange}
-          />
-          <button
-            onClick={handleClick}>GEN</button>
-      </form>
     </div>
   );
 }
