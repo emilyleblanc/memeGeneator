@@ -4,7 +4,10 @@ import Meme from "./Meme";
 import Form from "./Form";
 
 function MemeGenerator() {
-  const [data, setData] = useState([]);
+  const [ data, setData ] = useState([]);
+  const [ meme, setMeme ] = useState({})
+  const [ randomNum, setRandomNum ] = useState(0)
+  
   // CALLING API "https://api.imgflip.com/get_memes"
   useEffect(() => {
     fetch("https://api.imgflip.com/get_memes")
@@ -12,15 +15,16 @@ function MemeGenerator() {
       // DATA IS SAVED AS "allMemeImgs"
       .then((result) => {
         const allMemeImgs = result.data.memes;
-        
+        //filter data so we only get one image memes
+        const filteredMemeImgs = allMemeImgs.filter( meme => meme.box_count <= 2)
         // GET RANDOM IMAGE
-        const randomNum = Math.floor(Math.random() * allMemeImgs.length)
+        setRandomNum(Math.floor(Math.random() * filteredMemeImgs.length))
 
         // SET STATE TO RANDOM IMAGE
-        setData(allMemeImgs[randomNum]);
-    });
-}, []);
-
+        setData(filteredMemeImgs);
+        setMeme(filteredMemeImgs[randomNum])
+      });
+    }, []);
 
   // INPUT FIELD LOGIC AND SAVING STATE OF INPUTS
   const [topText, setTopText] = useState("");
@@ -36,18 +40,8 @@ function MemeGenerator() {
   };
 
   const handleClick = (e) => {
-    fetch("https://api.imgflip.com/get_memes")
-    .then((response) => response.json())
-    // DATA IS SAVED AS "allMemeImgs"
-    .then((result) => {
-      const allMemeImgs = result.data.memes;
-      
-      // GET RANDOM IMAGE
-      const randomNum = Math.floor(Math.random() * allMemeImgs.length)
-
-      // SET STATE TO RANDOM IMAGE
-      setData(allMemeImgs[randomNum]);
-      });
+      e.preventDefault()
+      setMeme(data[ Math.floor(Math.random() * data.length) ])
     } 
 
   return (
@@ -61,9 +55,9 @@ function MemeGenerator() {
         />
         
       <Meme 
-        id={data.id}
-        img={data.url}
-        alt={data.name}
+        id={meme.id}
+        img={meme.url}
+        alt={meme.name}
         topText={topText}
         bottomText={bottomText}
         />
